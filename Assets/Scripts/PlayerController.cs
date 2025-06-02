@@ -33,19 +33,15 @@ public class PlayerController : MonoBehaviour
 
     public ParticleSystem ImpactEffect;
     private bool wasonGround;
+    
+    public bool levelMode = false;
 
 
    // public GameObject projectile;
-   // public Transform firePoint;
+    // public Transform firePoint;
 
     public float fireRate = 0.5f; // Time between each shot
     private float nextFireTime = 0f; // Time of the next allowed shot
-
-
-    
-
-
-
 
     private void Start()
     {
@@ -63,6 +59,18 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         isGroundedBool = IsGrounded();
+
+        if(Input.GetKeyDown(KeyCode.E))
+        {
+            if (levelMode == false)
+            {
+                levelMode = true;   
+            }
+            else
+            {
+                levelMode = false;
+            }
+        }
 
         if (isGroundedBool)
         {
@@ -129,12 +137,12 @@ public class PlayerController : MonoBehaviour
     {
         if (moveX != 0 && isGroundedBool)
         {
-            playeranim.SetBool("run", true);
+            playeranim.SetBool("isRunning", true);
             footEmissions.rateOverTime= 35f;
         }
         else
         {
-            playeranim.SetBool("run",false);
+            playeranim.SetBool("isRunning",false);
             footEmissions.rateOverTime = 0f;
         }
 
@@ -190,28 +198,6 @@ public class PlayerController : MonoBehaviour
         }
     }
     
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     //mobile;
     public void MobileMove(float value)

@@ -26,6 +26,7 @@ public class GameManager : MonoBehaviour
 
 
 
+
    
     private int totalCoins = 0;
   
@@ -46,6 +47,7 @@ public class GameManager : MonoBehaviour
 
         FindTotalPickups();
     }
+
 
     public void IncrementCoinCount()
     {
