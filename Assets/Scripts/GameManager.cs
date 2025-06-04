@@ -15,6 +15,8 @@ public class GameManager : MonoBehaviour
     private int coinCount = 0;
     private int gemCount = 0;
     private bool isGameOver = false;
+
+    public bool hasController = false;
     private Vector3 playerPosition;
 
     //Level Complete
@@ -23,13 +25,16 @@ public class GameManager : MonoBehaviour
     [SerializeField] TMP_Text leveCompletePanelTitle;
     [SerializeField] TMP_Text levelCompleteCoins;
 
+    public GameObject door;
+
+    public GameObject[] tutorialBanners;
 
 
 
 
-   
+
     private int totalCoins = 0;
-  
+
 
 
 
@@ -51,8 +56,13 @@ public class GameManager : MonoBehaviour
 
     public void IncrementCoinCount()
     {
+
         coinCount++;
         UpdateGUI();
+        if (coinCount >= totalCoins)
+        {
+            allCoinsCollected();
+        }
     }
     public void IncrementGemCount()
     {
@@ -60,10 +70,17 @@ public class GameManager : MonoBehaviour
         UpdateGUI();
     }
 
+    public void IncrementControllerCount()
+    {
+        hasController = true;
+    }
+
     private void UpdateGUI()
     {
         coinText.text = coinCount.ToString();
-  
+        Debug.Log("Coin number: " + coinCount + " of: " + totalCoins);
+
+
     }
 
     public void Death()
@@ -88,7 +105,7 @@ public class GameManager : MonoBehaviour
             Debug.Log("Died");
         }
     }
- 
+
     public void FindTotalPickups()
     {
 
@@ -100,15 +117,15 @@ public class GameManager : MonoBehaviour
             {
                 totalCoins += 1;
             }
-           
+
         }
 
 
-      
+
     }
     public void LevelComplete()
     {
-       
+
 
 
         levelCompletePanel.SetActive(true);
@@ -116,10 +133,10 @@ public class GameManager : MonoBehaviour
 
 
 
-        levelCompleteCoins.text = "COINS COLLECTED: "+ coinCount.ToString() +" / " + totalCoins.ToString();
- 
+        levelCompleteCoins.text = "COINS COLLECTED: " + coinCount.ToString() + " / " + totalCoins.ToString();
+
     }
-   
+
     public IEnumerator DeathCoroutine()
     {
         yield return new WaitForSeconds(1f);
@@ -133,8 +150,61 @@ public class GameManager : MonoBehaviour
         {
             SceneManager.LoadScene(1);
 
-            
+
         }
+    }
+
+    public void allCoinsCollected()
+    {
+
+        door.SetActive(false);
+        Debug.Log("All coins collected, door is now open.");
+    }
+
+    public void ShowTutorialBanner(int index, bool isDoorTutorial)
+    {
+        StartCoroutine(ShowBannerCoroutine(index, isDoorTutorial));
+    }
+    
+    private IEnumerator ShowBannerCoroutine(int index, bool isDoorTutorial)
+    {
+        if (isDoorTutorial == false)
+        {
+            if (index < 0 || index >= tutorialBanners.Length)
+            {
+                Debug.LogError("Invalid tutorial banner index: " + index);
+                yield break;
+            }
+
+            GameObject banner = tutorialBanners[index];
+            banner.SetActive(true);
+
+            // Wait for 3 seconds before hiding the banner
+            yield return new WaitForSeconds(5f);
+
+            banner.SetActive(false);
+        }
+        else
+        {
+            if (coinCount < totalCoins)
+            {
+                 if (index < 0 || index >= tutorialBanners.Length)
+            {
+                Debug.LogError("Invalid door tutorial banner index: " + index);
+                yield break;
+            }
+
+            GameObject banner = tutorialBanners[index];
+            banner.SetActive(true);
+
+            // Wait for 3 seconds before hiding the banner
+            yield return new WaitForSeconds(3f);
+
+            banner.SetActive(false);
+            }
+           
+        }
+        
     }
 
 }

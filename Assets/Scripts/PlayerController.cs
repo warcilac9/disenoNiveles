@@ -36,6 +36,8 @@ public class PlayerController : MonoBehaviour
     
     public bool levelMode = false;
 
+    GameManager gameManager;
+
 
    // public GameObject projectile;
     // public Transform firePoint;
@@ -45,6 +47,8 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
+        gameManager = GameManager.instance;
+        levelMode = false;
         rb = GetComponent<Rigidbody2D>();
         footEmissions = footsteps.emission;
 
@@ -59,18 +63,26 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         isGroundedBool = IsGrounded();
+        
+        Debug.Log("Is Grounded: " + isGroundedBool);
 
-        if(Input.GetKeyDown(KeyCode.E))
+        if(GameManager.instance.hasController == true)
+        {
+            if (Input.GetKeyDown(KeyCode.E))
         {
             if (levelMode == false)
             {
-                levelMode = true;   
+                levelMode = true;
             }
             else
             {
                 levelMode = false;
             }
         }
+        }
+       
+
+        
 
         if (isGroundedBool)
         {
@@ -89,11 +101,11 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            if (canDoubleJump && Input.GetButtonDown("Jump"))
+            /*if (canDoubleJump && Input.GetButtonDown("Jump"))
             {
                 Jump(doubleJumpForce);
                 canDoubleJump = false; // Disable double jump until grounded again
-            }
+            }*/
         }
 
         if (!isPaused)
@@ -186,6 +198,7 @@ public class PlayerController : MonoBehaviour
     private bool IsGrounded()
     {
         float rayLength = 0.25f;
+        Debug.DrawRay(groundCheck.transform.position, Vector2.down * rayLength, Color.red);
         Vector2 rayOrigin = new Vector2(groundCheck.transform.position.x, groundCheck.transform.position.y - 0.1f);
         RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.down, rayLength, groundLayer);
         return hit.collider != null;
